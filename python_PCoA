@@ -1,6 +1,7 @@
+#TO DO: add our names and date created 
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
-#
+# 
 # Author:   HIGASHI Koichi
 # Created:  2014-11-19
 #
@@ -14,6 +15,7 @@ import scipy.stats
 import matplotlib.pyplot as plt
 import itertools
 
+#TO DO: change groupfile to metadata
 def executePCoA(data, distance_metric, drawBiplot, n_arrows, groupfile):
     
     matrix = data.values
@@ -21,6 +23,7 @@ def executePCoA(data, distance_metric, drawBiplot, n_arrows, groupfile):
     print(n_features,'features, ',n_samples,'samples')
     
     # compute distance
+    #TO DO: add 'WeightedUniFrac' as elif option
     if distance_metric == 'Jaccard':
         distance_matrix = distance.Jaccard(matrix.T)
     elif distance_metric == 'BrayCurtis':
@@ -70,12 +73,17 @@ def executePCoA(data, distance_metric, drawBiplot, n_arrows, groupfile):
             ax.annotate(name, xy=(arrows.loc[name,'x'],arrows.loc[name,'y']), xytext=(0,0), textcoords='offset points', color='k', fontsize=10)
     
     # draw plots using colors if samples are binned into groups
+    #TO DO: change groupfile to metadata
     if groupfile:
         group_names = []
         group2sample = {}
+        #TO DO: change groupfile to metadata  
         df = pd.read_table(groupfile, header=None, index_col=0)
         for sample in df.index:
-            # Use the value of second column (1) as a grouping category.
+            # Use the value of second column (1) as a grouping category each sample found in the first column (0).
+            #TO DO: re-define index numbers based on either MoD and customize for desired effect (colors) 
+                #NOTE: unless there is a way to combine such customization
+                #TO DO: define index as MoD column and for colors 
             group = df.loc[sample, 1]
             if group in group2sample:
                 group2sample[group].append(sample)
@@ -95,6 +103,9 @@ def executePCoA(data, distance_metric, drawBiplot, n_arrows, groupfile):
         for i,sample_name in enumerate(data.columns):
             ax.annotate(sample_name, xy=(positions[i,0],positions[i,1]), xytext=(5,5), textcoords='offset points', color='k', fontsize=16)
         ax.scatter(positions[:,0], positions[:,1], c='k', s=50)
+   
+    #TO DO: define index (column name) based on diet and customize for desired effect (shapes)
+        #TO DO: copy and paste code above and customize for diet column and markers
     
     x_label = 'PCo1'
     y_label = 'PCo2'
@@ -105,6 +116,7 @@ def executePCoA(data, distance_metric, drawBiplot, n_arrows, groupfile):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument( "-f", "--file", action="store", dest="data_file", help="tab-separated text file. rows are variables, columns are samples.")
+    #TO DO: add 'WeightedUniFrac' as choice
     parser.add_argument( "-d", "--distance_metric", action="store", dest="dist", choices=['Jaccard', 'BrayCurtis', 'JSD'], help="choose distance metric used for PCoA.")
     parser.add_argument( "-b", "--biplot", action="store_true", dest="biplot", default=False, help="output biplot (with calculating factor loadings).")
     parser.add_argument( "-n", "--number_of_arrows", action="store", type=int, dest="n_arrows", default=0, help="how many top-contributing arrows should be drawed.")
@@ -120,8 +132,10 @@ if __name__ == '__main__':
     distance_metric = args.dist
     drawBiplot = args.biplot
     n_arrows = args.n_arrows
+    #TO DO: change groupfile to metadata
     groupfile = args.group_file
     
     data = pd.read_table(datafile,index_col=0)
+    #TO DO: change groupfile to metadata
     executePCoA(data, distance_metric, drawBiplot, n_arrows, groupfile)
     print('done.')
