@@ -9,7 +9,8 @@
 import argparse
 import pandas as pd
 import numpy as np
-import distance
+#TO DO: import scikit bio instead of distance
+from scikitbio import weighted_unifrac
 from sklearn import manifold
 import scipy.stats
 import matplotlib.pyplot as plt
@@ -22,8 +23,8 @@ def executePCoA(data, distance_metric, drawBiplot, n_arrows, groupfile):
     n_features, n_samples = matrix.shape
     print(n_features,'features, ',n_samples,'samples')
     
-    # compute distance
-    #TO DO: add 'WeightedUniFrac' as elif option
+    # compute distance 
+    #TO DO: delete and replace, define WeightedUniFrac as distance metric (follow SciKit-Bio code)
     if distance_metric == 'Jaccard':
         distance_matrix = distance.Jaccard(matrix.T)
     elif distance_metric == 'BrayCurtis':
@@ -31,7 +32,7 @@ def executePCoA(data, distance_metric, drawBiplot, n_arrows, groupfile):
     elif distance_metric == 'JSD':
         distance_matrix = distance.JSDivergence(matrix.T)
     
-    # execute PCoA
+    # execute PCoA, mds: multidimensional scaling
     mds = manifold.MDS(n_components=2, max_iter=3000, dissimilarity="precomputed", n_jobs=1)
     positions = mds.fit(distance_matrix).embedding_
     positions_with_sampleIndex = pd.DataFrame(positions, index=data.columns)
